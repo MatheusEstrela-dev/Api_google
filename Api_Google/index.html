@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login com Google</title>
+</head>
+<body>
+    <h2>Login com Conta Google</h2>
+    <div id="g_id_onload"
+         data-client_id="79566223665-reqmqlnjlqk893ck5asut9in040o8eff.apps.googleusercontent.com"
+         data-login_uri="http://localhost:5000/login"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-size="large">
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            const data = {
+                credential: response.credential
+            };
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Handle login success (e.g., redirect to a protected page)
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "79566223665-reqmqlnjlqk893ck5asut9in040o8eff.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.querySelector('.g_id_signin'),
+                { theme: "outline", size: "large" }  // customization attributes
+            );
+            google.accounts.id.prompt(); // also display the One Tap dialog
+        };
+    </script>
+</body>
+</html>
